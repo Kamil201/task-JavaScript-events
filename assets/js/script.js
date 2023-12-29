@@ -148,21 +148,36 @@ const onImageClick = function (event, sliderRootElement, imagesSelector) {
 };
 
 const onImageNext = function (event) {
+
 	// console.log(this, "onImageNext");
 	// // [this] wskazuje na element [.js-slider]
 
 	// todo:
 	// 1. wyszukać aktualny wyświetlany element przy pomocy [.js-slider__thumbs-image--current]
-	const thumbsContainer = this.querySelector(".js-slider__thumbs");
-	const currentThumb = thumbsContainer.querySelector(
-		".js-slider__thumbs-image--current"
-	);
+	const thumbsContainer = this.querySelector(".js-slider__thumbs"); // miniaturki zdjęć na dole
+
+	console.log(thumbsContainer);
+	if (!thumbsContainer) {
+		console.error("Element .js-slider__thumbs not found.");
+		return;
+	}
+
+	const currentThumb = thumbsContainer.querySelector(".js-slider__thumbs-item");
+
+	if(!currentThumb){
+		console.error('currentThumb nie odnaleziono')
+		return
+	}
+
+	console.log("Current thumb:", currentThumb);
+
 	// 2. znaleźć element następny do wyświetlenie względem drzewa DOM dla [.js-slider__thumbs]
-	let nextThumb = currentThumb.nextElementSibling;
+	let nextThumb = currentThumb.firstElementChild;
+	console.log("nextThumb:", nextThumb);
 	// 3. sprawdzić czy ten element istnieje - jeśli nie to [.nextElementSibling] zwróci [null]
 	if (!nextThumb) {
 		//Jeśli nie istnieje, przejdź do pierwszego elementu miniatury
-		nextThumb = thumbsContainer.parentElement.firstElementChild;
+		nextThumb = thumbsContainer.firstElementChild;
 	}
 	// 4. przełączyć klasę [.js-slider__thumbs-image--current] do odpowiedniego elementu// 4. przełączyć klasę [.js-slider__thumbs-image--current] do odpowiedniego elementu
 	currentThumb.classList.remove("js-slider__thumbs-image--current");
@@ -170,9 +185,12 @@ const onImageNext = function (event) {
 
 	// 5. podmienić atrybut o nazwie [src] dla [.js-slider__image]
 	const imageSrc = nextThumb.src;
+	console.log(imageSrc)
+	
 	const mainImage = document.querySelector(".js-slider__image");
-	mainImage.src = imageSrc;
 
+	console.log(mainImage);
+	mainImage.src = imageSrc;
 	// --------------------------------------------
 
 	// // 1. Sprawdzić, czy element [.js-slider__thumbs] istnieje
@@ -208,6 +226,7 @@ const onImageNext = function (event) {
 
 const onImagePrev = function (event) {
 	console.log(this, "onImagePrev");
+
 	// [this] wskazuje na element [.js-slider]
 
 	// todo:
@@ -216,7 +235,7 @@ const onImagePrev = function (event) {
 	// 3. sprawdzić czy ten element istnieje i czy nie posiada klasy [.js-slider__thumbs-item--prototype]
 	// 4. przełączyć klasę [.js-slider__thumbs-image--current] do odpowiedniego elementu
 	// 5. podmienić atrybut [src] dla [.js-slider__image]
-};
+}
 
 const onClose = function (event) {
 	// todo:
