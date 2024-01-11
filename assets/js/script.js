@@ -150,6 +150,7 @@ const onImageClick = function (event, sliderRootElement, imagesSelector) {
 			return;
 		}
 
+		
 		// TO JEST ELEMENT IMG
 		const currentThumb = thumbsContainer.querySelector(
 			".js-slider__thumbs-item"
