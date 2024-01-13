@@ -135,8 +135,6 @@ const onImageClick = function (event, sliderRootElement, imagesSelector) {
 	}
 };
 
-// const onImageNext = function (event) {
-
 	const onImageNext = function (event, sliderRootElement) {
 		// console.log(this, "onImageNext");
 		// // [this] wskazuje na element [.js-slider]
@@ -153,7 +151,7 @@ const onImageClick = function (event, sliderRootElement, imagesSelector) {
 		
 		// TO JEST ELEMENT IMG
 		const currentThumb = thumbsContainer.querySelector(
-			".js-slider__thumbs-item"
+			".js-slider__thumbs-image--current"
 		);
 		console.log("Current thumb:", currentThumb);
 
@@ -168,64 +166,88 @@ const onImageClick = function (event, sliderRootElement, imagesSelector) {
 		// 4. przełączyć klasę [.js-slider__thumbs-image--current] do odpowiedniego elementu
 		currentThumb.classList.remove("js-slider__thumbs-image--current");
 		console.log("currentThumb", currentThumb);
-		nextThumb.classList.add("js-slider__thumbs-image--current");
-
+		
+		nextThumb
+			.querySelector("img")
+			.classList.add("js-slider__thumbs-image--current");
 		// 5. podmienić atrybut o nazwie [src] dla [.js-slider__image]
-		// const imageSrc = nextThumb.src;
-		// console.log(imageSrc);
+		const imageSrc = nextThumb.querySelector('img').src;
+		console.log(imageSrc);
 
-		// const mainImage = document.querySelector(".js-slider__image");
+		const mainImage = document.querySelector(".js-slider__image");
 
-		// console.log(mainImage);
-		// mainImage.src = imageSrc;
-		// --------------------------------------------
-
-		// // 1. Sprawdzić, czy element [.js-slider__thumbs] istnieje
-		// const thumbsContainer = this.querySelector(".js-slider__thumbs");
-		// if (!thumbsContainer) {
-		// 	console.error("Element .js-slider__thumbs not found.");
-		// 	return;
-		// }
-
-		// // 2. Wyszukać aktualny wyświetlany element przy pomocy [.js-slider__thumbs-image--current]
-		// const currentThumb = thumbsContainer.querySelector(
-		// 	".js-slider__thumbs-image--current"
-		// );
-
-		// // 3. Znaleźć element następny do wyświetlenia względem drzewa DOM dla [.js-slider__thumbs]
-		// let nextThumb = currentThumb.nextElementSibling;
-
-		// // 4. Sprawdzić, czy ten element istnieje - jeśli nie, [.nextElementSibling] zwróci [null]
-		// if (!nextThumb) {
-		// 	// 5. Jeśli nie istnieje, przejdź do pierwszego elementu miniatury
-		// 	nextThumb = thumbsContainer.firstElementChild;
-		// }
-
-		// // 6. Przełączyć klasę [.js-slider__thumbs-image--current] do odpowiedniego elementu
-		// currentThumb.classList.remove("js-slider__thumbs-image--current");
-		// nextThumb.classList.add("js-slider__thumbs-image--current");
-
-		// // 7. Podmienić atrybut o nazwie [src] dla [.js-slider__image]
-		// const imageSrc = nextThumb.src;
-		// const mainImage = document.querySelector(".js-slider__image");
-		// mainImage.src = imageSrc;
+		console.log(mainImage);
+		mainImage.src = imageSrc;
+		
 	};
 
 const onImagePrev = function (event) {
 	console.log(this, "onImagePrev");
-
-	// [this] wskazuje na element [.js-slider]
-
-	// todo:
 	// 1. wyszukać aktualny wyświetlany element przy pomocy [.js-slider__thumbs-image--current]
+	const thumbsContainer = this.querySelector(".js-slider__thumbs"); // miniaturki zdjęć na dole
+
+	if (!thumbsContainer) {
+		console.error("Element .js-slider__thumbs not found.");
+		return;
+	}
+
+	// TO JEST ELEMENT IMG
+	const currentThumb = thumbsContainer.querySelector(
+		".js-slider__thumbs-image--current"
+	);
+
+	if (!currentThumb) {
+		console.error("Current thumb not found.");
+		return;
+	}
+
 	// 2. znaleźć element poprzedni do wyświetlenie względem drzewa DOM dla [.js-slider__thumbs]
+	let prevThumb = currentThumb.parentElement.previousElementSibling;
+
 	// 3. sprawdzić czy ten element istnieje i czy nie posiada klasy [.js-slider__thumbs-item--prototype]
+	while (
+		prevThumb &&
+		prevThumb.classList.contains("js-slider__thumbs-item--prototype")
+	) {
+		prevThumb = prevThumb.previousElementSibling; // Jeśli to jest prototyp, idź do poprzedniego elementu
+	}
+
 	// 4. przełączyć klasę [.js-slider__thumbs-image--current] do odpowiedniego elementu
-	// 5. podmienić atrybut [src] dla [.js-slider__image]
+	if (prevThumb) {
+		currentThumb.classList.remove("js-slider__thumbs-image--current");
+		prevThumb
+			.querySelector("img")
+			.classList.add("js-slider__thumbs-image--current");
+
+		// 5. podmienić atrybut [src] dla [.js-slider__image]
+		const imageSrc = prevThumb.querySelector("img").src;
+		const mainImage = document.querySelector(".js-slider__image");
+		mainImage.src = imageSrc;
+	}
 };
 
 const onClose = function (event) {
 	// todo:
-	// 1. należy usunać klasę [js-slider--active] dla [.js-slider]
-	// 2. należy usunać wszystkie dzieci dla [.js-slider__thumbs] pomijając [.js-slider__thumbs-item--prototype]
+	// 1. należy usunąć klasę [js-slider--active] dla [.js-slider]
+	const sliderRootElement = document.querySelector(".js-slider");
+	sliderRootElement.classList.remove("js-slider--active");
+
+	// 2. należy usunąć wszystkie dzieci dla [.js-slider__thumbs] pomijając [.js-slider__thumbs-item--prototype]
+	const thumbsContainer = sliderRootElement.querySelector(".js-slider__thumbs");
+
+	if (!thumbsContainer) {
+		console.error("Element .js-slider__thumbs not found.");
+		return;
+	}
+
+	const thumbsItems = thumbsContainer.querySelectorAll(
+		".js-slider__thumbs-item"
+	);
+
+	thumbsItems.forEach((item) => {
+		if (!item.classList.contains("js-slider__thumbs-item--prototype")) {
+			// Usuwamy dzieci, które nie są prototypem
+			thumbsContainer.removeChild(item);
+		}
+	});
 };
