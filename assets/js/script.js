@@ -109,8 +109,6 @@ const onImageClick = function (event, sliderRootElement, imagesSelector) {
 	} else {
 		const thumbsContainer =
 			sliderRootElement.querySelector(".js-slider__thumbs");
-		thumbsContainer.innerHTML = ""; // Wyczyszczenie poprzedniej zawartości
-
 		const groupImages = document.querySelectorAll(
 			`${imagesSelector}[data-slider-group-name="${groupName}"]`
 		);
